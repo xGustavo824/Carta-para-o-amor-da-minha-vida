@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contagem Regressiva</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #0a0a0a;
+      color: #fff;
+      text-align: center;
+    }
+
+    .botao-entrada {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .botao-entrada button {
+      background: #ff0000;
+      color: #fff;
+      font-size: 20px;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 0 10px #ff0000;
+      transition: all 0.3s ease;
+    }
+
+    .botao-entrada button:hover {
+      box-shadow: 0 0 20px #ff0000;
+    }
+
+    .container {
+      display: none;
+      height: 100vh;
+      padding: 40px;
+      font-size: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #cronometro {
+      margin-top: 20px;
+      font-size: 28px;
+      color: #ff0000;
+    }
+
+    .aniversario {
+      color: #ff0000;
+    }
+
+    .confete {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .confete span {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background-color: #ff0000;
+      border-radius: 50%;
+      animation: cair 3s infinite;
+    }
+
+    @keyframes cair {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(500px) rotate(360deg);
+      }
+    }
+
+    .feliz-aniversario {
+      font-size: 50px;
+      color: #ff69b4;
+      font-weight: bold;
+      text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.7);
+      margin-top: 50px;
+    }
+
+    .mensagem-aniversario {
+      font-size: 24px;
+      color: #fff;
+      margin-top: 20px;
+      line-height: 1.5;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .titulo-cronometro {
+      font-size: 30px;
+      color: #ffffff;
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="botao-entrada">
+    <button onclick="mostrarCronometro()">❤️ Clique aqui ❤️</button>
+  </div>
+
+  <div class="container" id="cronometro-container">
+    <!-- Aqui a mensagem será inserida após o botão ser clicado -->
+    <div id="titulo-cronometro" class="titulo-cronometro"></div>
+    <div id="cronometro"></div>
+  </div>
+
+  <div id="confete-container" class="confete"></div>
+
+  <script>
+    function mostrarCronometro() {
+      document.querySelector(".botao-entrada").style.display = "none";
+      document.querySelector("#cronometro-container").style.display = "flex";
+      exibirTituloCronometro(); // Exibe a mensagem logo acima do cronômetro
+      iniciarCronometro();
+    }
+
+    function exibirTituloCronometro() {
+      const titulo = "Contagem para o seu <span class='aniversario'>Aniversário Meu Amor</span>";
+      document.getElementById("titulo-cronometro").innerHTML = titulo;
+    }
+
+    function iniciarCronometro() {
+      // Data e hora final: 3 de agosto de 2025 às 13:00
+      const destino = new Date("2025-08-03T13:00:00");
+
+      function atualizarCronometro() {
+        const agora = new Date();
+        const diff = destino - agora;
+
+        if (diff <= 0) {
+          document.getElementById("cronometro").style.display = "none"; // Esconde o cronômetro
+          document.getElementById("cronometro-container").innerHTML = "<h1 class='feliz-aniversario'>Feliz Aniversário! 🎉🎂</h1>"; // Exibe a mensagem de feliz aniversário
+          exibirConfetes();
+          exibirMensagemAniversario(); // Adiciona a mensagem fofa
+          return;
+        }
+
+        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutos = Math.floor((diff / (1000 * 60)) % 60);
+        const segundos = Math.floor((diff / 1000) % 60);
+
+        document.getElementById("cronometro").textContent =
+          `Faltam ${dias} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos.`;
+
+        setTimeout(atualizarCronometro, 1000);
+      }
+
+      atualizarCronometro();
+    }
+
+    // Função para criar os confetes
+    function exibirConfetes() {
+      const container = document.getElementById('confete-container');
+      const numConfetes = 100; // Número de confetes
+
+      for (let i = 0; i < numConfetes; i++) {
+        const confete = document.createElement('span');
+        confete.style.left = Math.random() * 100 + "%";
+        confete.style.animationDuration = Math.random() * 3 + 2 + "s"; // Aleatório entre 2s e 5s
+        confete.style.animationDelay = Math.random() * 2 + "s"; // Aleatório para atraso
+        confete.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Cor aleatória
+        container.appendChild(confete);
+      }
+    }
+
+    // Função para exibir a mensagem fofa
+    function exibirMensagemAniversario() {
+      const mensagem = `
+        <div class="mensagem-aniversario">
+          <p><strong>Meu amor,</strong></p>
+          <p>Hoje é o seu dia! Um dia para celebrar não só o aniversário de alguém tão especial, mas também a pessoa incrível que você é. Você ilumina a minha vida de um jeito único, e eu me sinto a pessoa mais sortuda por estar ao seu lado.</p>
+          <p>Que este novo ano da sua vida seja cheio de sorrisos, abraços apertados, conquistas e momentos inesquecíveis. E eu estarei aqui, ao seu lado, para comemorar cada passo dessa jornada maravilhosa que você está vivendo.</p>
+          <p>Te amo mais do que palavras podem expressar! Que seu dia seja tão especial quanto você é para mim. ❤️</p>
+          <p><strong>Feliz Aniversário, meu amor!</strong></p>
+        </div>
+      `;
+      document.getElementById("cronometro-container").innerHTML += mensagem;
+    }
+  </script>
+</body>
+</html>
