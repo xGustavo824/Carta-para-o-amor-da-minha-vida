@@ -1,200 +1,533 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contagem Regressiva</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background: #0a0a0a;
-      color: #fff;
-      text-align: center;
-    }
+<meta charset="UTF-8">
+<title>Carta para o Amor da Minha Vida</title>
 
-    .botao-entrada {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<style>
+body{
+  background:white;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  font-family:Georgia,serif;
+  margin:0;
+  flex-direction:column;
+}
 
-    .botao-entrada button {
-      background: #ff0000;
-      color: #fff;
-      font-size: 20px;
-      padding: 15px 30px;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      box-shadow: 0 0 10px #ff0000;
-      transition: all 0.3s ease;
-    }
+/* Envelope */
+.envelope{
+  position:relative;
+  width:500px;
+  height:350px;
+  background:#fff;
+  border:1px solid black;
+  border-radius:20px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.2);
+  overflow:hidden;
+}
 
-    .botao-entrada button:hover {
-      box-shadow: 0 0 20px #ff0000;
-    }
+/* Abas */
+.flap-top, .flap-bottom, .flap-left, .flap-right{
+  position:absolute;
+  transition:transform 1s ease-in-out;
+}
 
-    .container {
-      display: none;
-      height: 100vh;
-      padding: 40px;
-      font-size: 24px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
+/* Aba superior */
+.flap-top{
+  top:0; left:0;
+  border-left:250px solid transparent;
+  border-right:250px solid transparent;
+  border-top:180px solid #ff003c;
+  transform-origin:top center;
+  z-index:3;
+}
 
-    #cronometro {
-      margin-top: 20px;
-      font-size: 28px;
-      color: #ff0000;
-    }
+/* Aba inferior */
+.flap-bottom{
+  bottom:0; left:0;
+  border-left:250px solid transparent;
+  border-right:250px solid transparent;
+  border-bottom:180px solid #ff003c;
+  transform-origin:bottom center;
+  z-index:2;
+}
 
-    .aniversario {
-      color: #ff0000;
-    }
+/* Aba esquerda */
+.flap-left{
+  top:0; left:0;
+  border-top:175px solid transparent;
+  border-bottom:175px solid transparent;
+  border-left:250px solid #ff3355;
+  transform-origin:left center;
+  z-index:2;
+}
 
-    .confete {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 999;
-    }
+/* Aba direita */
+.flap-right{
+  top:0; right:0;
+  border-top:175px solid transparent;
+  border-bottom:175px solid transparent;
+  border-right:250px solid #ff3355;
+  transform-origin:right center;
+  z-index:2;
+}
 
-    .confete span {
-      position: absolute;
-      width: 10px;
-      height: 10px;
-      background-color: #ff0000;
-      border-radius: 50%;
-      animation: cair 3s infinite;
-    }
+/* Carta */
+.carta{
+  position:absolute;
+  top:60px;
+  left:50%;
+  transform:translateX(-50%);
+  width:340px;
+  max-height:220px;
+  background:#fffaf0;
+  padding:40px 30px;
+  text-align:left;
+  transition:transform 1s ease-in-out;
+  z-index:1;
+  border-radius:20px;
+  box-shadow:inset 0 0 8px rgba(0,0,0,0.1),
+             0 6px 15px rgba(0,0,0,0.2);
+  border:1px solid black;
+  overflow-y:auto;
+}
 
-    @keyframes cair {
-      0% {
-        transform: translateY(0) rotate(0deg);
-      }
-      100% {
-        transform: translateY(500px) rotate(360deg);
-      }
-    }
+/* Mensagem */
+.mensagem{
+  display:none;
+  font-size:16px;
+  line-height:1.8;
+  color:#333;
+  font-family:"Georgia",serif;
+  white-space:pre-line;
+}
 
-    .feliz-aniversario {
-      font-size: 50px;
-      color: #ff69b4;
-      font-weight: bold;
-      text-shadow: 2px 2px 10px rgba(255, 0, 0, 0.7);
-      margin-top: 50px;
-    }
+/* botões */
+.btn{
+  margin:20px 10px 0 10px;
+  padding:12px 28px;
+  font-size:18px;
+  background:crimson;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  transition:0.3s;
+}
+.btn:hover{ background:#b3002d; }
 
-    .mensagem-aniversario {
-      font-size: 24px;
-      color: #fff;
-      margin-top: 20px;
-      line-height: 1.5;
-      max-width: 600px;
-      margin-left: auto;
-      margin-right: auto;
-    }
+/* corações animados */
+.coracao{
+  position:fixed;
+  animation:subir 3s forwards;
+  opacity:0;
+  pointer-events:none;
+  z-index:9999;
+}
+@keyframes subir{
+  0%{transform:translateY(0) scale(1);opacity:1;}
+  50%{transform:translateY(-50vh) scale(1.2);opacity:0.8;}
+  100%{transform:translateY(-100vh) scale(0.8);opacity:0;}
+}
 
-    .titulo-cronometro {
-      font-size: 30px;
-      color: #ffffff;
-      margin-top: 20px;
-      font-weight: bold;
-    }
-  </style>
+/* Nova seção (parte 2) */
+#parte2{
+  display:none;
+  text-align:center;
+  font-family:Georgia,serif;
+  color:#fff;
+  background:#111;
+  padding:40px 0;
+  min-height:100vh;
+  position:relative;
+}
+
+/* Título neon */
+#tituloCasal {
+  font-size:48px;
+  margin-bottom:30px;
+  color:#ffffff;
+  text-shadow: 0 0 10px #000000, 0 0 20px #ff4646, 0 0 30px #ff4646;
+}
+
+/* Carrossel */
+.carrossel {
+  display:flex;
+  overflow:hidden;
+  justify-content:center;
+  margin-bottom:20px;
+  gap:20px;
+}
+
+.fotoCarrossel {
+  width:200px;
+  height:200px;
+  object-fit:cover;
+  border:4px solid #ff4141;
+  border-radius:15px;
+  box-shadow:0 0 15px #ff4141,0 0 30px #ff4141,0 0 45px #ff4141;
+  transition:transform 0.5s;
+}
+
+.fotoCarrossel:hover {
+  transform:scale(1.1);
+}
+
+/* Botões do carrossel menores e lado a lado */
+.botoes-carrossel {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.btn-carrossel {
+  padding: 8px 16px;
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Contador */
+#contador {
+  font-size:24px;
+  margin-bottom:20px;
+  color:#ffffff;
+  text-shadow:0 0 5px #000000,0 0 10px #ff4646;
+}
+
+/* Mensagem de amor */
+#mensagemAmor {
+  font-size:20px;
+  color:#fff;
+  margin-bottom:30px;
+}
+
+/* Spotify */
+#spotifyPreview iframe {
+  border-radius:15px;
+}
+
+/* Botão "?" só na Parte 2 */
+#btnParte3{
+  position:absolute;
+  bottom:20px;
+  right:20px;
+  z-index:10;
+}
+
+/* Parte 3 - corações explodindo */
+#parte3{
+  display:none;
+  position:relative;
+  width:100%;
+  height:100vh;
+  background:#111;
+  overflow:hidden;
+}
+
+/* Animação de balanço suave para corações da Parte 3 */
+@keyframes balanco {
+  0%   { transform: translateX(0) rotate(0deg); }
+  25%  { transform: translateX(-10px) rotate(-5deg); }
+  50%  { transform: translateX(0) rotate(0deg); }
+  75%  { transform: translateX(10px) rotate(5deg); }
+  100% { transform: translateX(0) rotate(0deg); }
+}
+
+.coracaoExplosao {
+  position:absolute;
+  font-size:30px;
+  cursor:pointer;
+  user-select:none;
+  transition: transform 0.3s, opacity 0.3s;
+  animation: balanco 2s infinite ease-in-out; /* aplica balanço contínuo */
+}
+
+.mensagemExplosao {
+  position:absolute;
+  color: rgb(255, 255, 255);
+  font-size: 18px;
+  background: rgba(0,0,0,0.5);
+  padding:5px 10px;
+  border-radius:10px;
+  pointer-events:none;
+  opacity:0;
+  transition:opacity 0.5s;
+}
+</style>
 </head>
+
 <body>
-  <div class="botao-entrada">
-    <button onclick="mostrarCronometro()">❤️ Clique aqui ❤️</button>
+
+<!-- Parte 1 -->
+<div id="parte1">
+  <div class="envelope">
+    <div class="flap-top" id="flapTop"></div>
+    <div class="flap-bottom" id="flapBottom"></div>
+    <div class="flap-left" id="flapLeft"></div>
+    <div class="flap-right" id="flapRight"></div>
+
+    <div class="carta" id="carta">
+      <div class="mensagem" id="mensagem">
+        Amor, desde quando Deus juntou nossos caminhos minha vida ficou diferente. Seu sorriso ilumina meus dias e cada momento com você é especial e unico. Eu agradeço a Deus por ter colocado você na minha vida. Você melhora os dias ruins e a agitação dos dias calmos, no meio da semana ficamos distantes e isso não muda oque sinto por você so me faz amar mais e mais e cada dia querer casar logo contigo. Eu te amo demais, quero passar o resto da minha vida contigo meu amor!
+        ❤️ Com amor.
+        <br><br>
+      </div>
+    </div>
   </div>
 
-  <div class="container" id="cronometro-container">
-    <!-- Aqui a mensagem será inserida após o botão ser clicado -->
-    <div id="titulo-cronometro" class="titulo-cronometro"></div>
-    <div id="cronometro"></div>
+  <!-- Botões -->
+  <div style="display:flex; justify-content:center;">
+    <button class="btn" onclick="abrirCarta()">Abrir</button>
+    <button class="btn" onclick="chuvaCoracoes()">❤️</button>
+    <button class="btn" onclick="fecharCarta()">Fechar</button>
+    <button class="btn" onclick="proximoSite()">Próximo</button>
+  </div>
+</div>
+
+<!-- Parte 2 -->
+<div id="parte2">
+  <h1 id="tituloCasal">Ana Julia e Gustavo</h1>
+
+  <!-- Carrossel de fotos -->
+  <div class="carrossel">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/1AG.jpeg" class="fotoCarrossel" alt="Foto 1">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/2AG.jpeg" class="fotoCarrossel" alt="Foto 2">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/3AG.jpeg" class="fotoCarrossel" alt="Foto 3">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/4AG.jpeg" class="fotoCarrossel" alt="Foto 4">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/5AG.jpeg" class="fotoCarrossel" alt="Foto 5">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/6AG.jpeg" class="fotoCarrossel" alt="Foto 6">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/7AG.jpeg" class="fotoCarrossel" alt="Foto 7">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/8AG.jpeg" class="fotoCarrossel" alt="Foto 8">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/9AG.jpeg" class="fotoCarrossel" alt="Foto 9">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 10">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 11">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 12">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 13">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 14">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 15">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 16">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 17">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 18">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 19">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 20">
+    <img src="file:///C:/Users/Gustavo%20Paulino/Documents/Yue/Fotos/10AG.jpeg" class="fotoCarrossel" alt="Foto 21">
   </div>
 
-  <div id="confete-container" class="confete"></div>
+  <!-- Botões do carrossel -->
+  <div class="botoes-carrossel">
+    <button class="btn btn-carrossel" onclick="fotoAnterior()">◀ Voltar</button>
+    <button class="btn btn-carrossel" onclick="fotoProxima()">Próxima ▶</button>
+  </div>
 
-  <script>
-    function mostrarCronometro() {
-      document.querySelector(".botao-entrada").style.display = "none";
-      document.querySelector("#cronometro-container").style.display = "flex";
-      exibirTituloCronometro(); // Exibe a mensagem logo acima do cronômetro
-      iniciarCronometro();
-    }
+  <!-- Contador de dias, horas, minutos e segundos -->
+  <div id="contador">
+    Estamos juntos há <span id="diasJuntos">0</span> dias <span id="horasJuntos">0</span>h <span id="minutosJuntos">0</span>m <span id="segundosJuntos">0</span>s
+  </div>
 
-    function exibirTituloCronometro() {
-      const titulo = "Contagem para o seu <span class='aniversario'>Aniversário Meu Amor</span>";
-      document.getElementById("titulo-cronometro").innerHTML = titulo;
-    }
+  <!-- Mensagem personalizada -->
+  <div id="mensagemAmor">
+    Meu amor,
+Existem sentimentos que são tão grandes que as palavras parecem pequenas demais para explicar. E tudo que eu sinto por você é exatamente assim… Grande, verdadeiro e difícil de colocar em frases. Às vezes eu tento explicar, mas sempre sinto que falta alguma palavra, porque nada consegue descrever completamente o tanto que te amo e o tanto que você e importante. ❤️
+Você é a calmaria dos meus dias agitados, aquele lugar de paz onde meu coração descansa. Mas também é a agitação dos meus dias calmos, porque só de pensar em você meu coração se enche de emoção e felicidade.
+Você transforma tudo ao meu redor. Seu jeito, seu sorriso, seus olhos… tudo em você faz meu coração bater mais rapido e dar uma errada na batida. É como se o mundo ficasse mais bonito simplesmente porque você faz parte dele.
+Meu amor, às vezes eu só queria que você pudesse olhar dentro do meu coração por um instante, para entender o quanto você é importante para mim. Porque o que eu sinto por você está sempre aumentando, é algo profundo, verdadeiro e cheio de carinho.
+E mesmo que faltem palavras para explicar tudo isso, existe uma coisa que sempre vai ser fácil de dizer: eu amo você, meu amor, mais do que qualquer frase conseguiria mostrar.❤️
+  </div>
 
-    function iniciarCronometro() {
-      // Data e hora final: 3 de agosto de 2025 às 13:00
-      const destino = new Date("2025-08-03T13:00:00");
+  <!-- Preview do Spotify -->
+  <div id="spotifyPreview">
+    <iframe src="https://open.spotify.com/embed/track/13UY9fXJBE32mR6GUhYIfO?utm_source=generator" width="300" height="80" frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+  </div>
 
-      function atualizarCronometro() {
-        const agora = new Date();
-        const diff = destino - agora;
+  <!-- Botão "?" só para Parte 2 -->
+  <button id="btnParte3" class="btn">?</button>
+</div>
 
-        if (diff <= 0) {
-          document.getElementById("cronometro").style.display = "none"; // Esconde o cronômetro
-          document.getElementById("cronometro-container").innerHTML = "<h1 class='feliz-aniversario'>Feliz Aniversário! 🎉🎂</h1>"; // Exibe a mensagem de feliz aniversário
-          exibirConfetes();
-          exibirMensagemAniversario(); // Adiciona a mensagem fofa
-          return;
-        }
+<!-- Parte 3 -->
+<div id="parte3"></div>
 
-        const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const horas = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutos = Math.floor((diff / (1000 * 60)) % 60);
-        const segundos = Math.floor((diff / 1000) % 60);
+<script>
+// Funções de abrir/fechar carta
+function abrirCarta(){
+  document.getElementById('flapTop').style.transform="rotateX(180deg)";
+  document.getElementById('flapBottom').style.transform="rotateX(-180deg)";
+  document.getElementById('flapLeft').style.transform="rotateY(-180deg)";
+  document.getElementById('flapRight').style.transform="rotateY(180deg)";
 
-        document.getElementById("cronometro").textContent =
-          `Faltam ${dias} dias, ${horas} horas, ${minutos} minutos e ${segundos} segundos.`;
+  setTimeout(()=>{ 
+    document.getElementById('carta').style.transform="translate(-50%,-40px)";
+    document.getElementById('mensagem').style.display="block";
+  },800);
+}
 
-        setTimeout(atualizarCronometro, 1000);
-      }
+function fecharCarta(){
+  document.getElementById('flapTop').style.transform="rotateX(0deg)";
+  document.getElementById('flapBottom').style.transform="rotateX(0deg)";
+  document.getElementById('flapLeft').style.transform="rotateY(0deg)";
+  document.getElementById('flapRight').style.transform="rotateY(0deg)";
 
-      atualizarCronometro();
-    }
+  document.getElementById('mensagem').style.display="none";
+  document.getElementById('carta').style.transform="translateX(-50%)";
+}
 
-    // Função para criar os confetes
-    function exibirConfetes() {
-      const container = document.getElementById('confete-container');
-      const numConfetes = 100; // Número de confetes
+// Corações animados
+function criarCoracao(){
+  const coracao=document.createElement("div");
+  coracao.className="coracao";
+  coracao.innerHTML="❤️";
+  coracao.style.left=(Math.random()*window.innerWidth)+"px";
+  coracao.style.top=(window.innerHeight)+"px";
+  coracao.style.fontSize=(20+Math.random()*25)+"px";
+  document.body.appendChild(coracao);
+  setTimeout(()=>{ coracao.remove(); },3000);
+}
 
-      for (let i = 0; i < numConfetes; i++) {
-        const confete = document.createElement('span');
-        confete.style.left = Math.random() * 100 + "%";
-        confete.style.animationDuration = Math.random() * 3 + 2 + "s"; // Aleatório entre 2s e 5s
-        confete.style.animationDelay = Math.random() * 2 + "s"; // Aleatório para atraso
-        confete.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`; // Cor aleatória
-        container.appendChild(confete);
-      }
-    }
+function chuvaCoracoes(){
+  const intervalo=setInterval(()=>{ criarCoracao(); },200);
+  setTimeout(()=>{ clearInterval(intervalo); },10000);
+}
 
-    // Função para exibir a mensagem fofa
-    function exibirMensagemAniversario() {
-      const mensagem = `
-        <div class="mensagem-aniversario">
-          <p><strong>Meu amor,</strong></p>
-          <p>Hoje é o seu dia! Um dia para celebrar não só o aniversário de alguém tão especial, mas também a pessoa incrível que você é. Você ilumina a minha vida de um jeito único, e eu me sinto a pessoa mais sortuda por estar ao seu lado.</p>
-          <p>Que este novo ano da sua vida seja cheio de sorrisos, abraços apertados, conquistas e momentos inesquecíveis. E eu estarei aqui, ao seu lado, para comemorar cada passo dessa jornada maravilhosa que você está vivendo.</p>
-          <p>Te amo mais do que palavras podem expressar! Que seu dia seja tão especial quanto você é para mim. ❤️</p>
-          <p><strong>Feliz Aniversário, meu amor!</strong></p>
-        </div>
-      `;
-      document.getElementById("cronometro-container").innerHTML += mensagem;
-    }
-  </script>
+// Nova função pro próximo site
+let indiceFoto = 0;
+let intervaloCarrossel;
+function proximoSite(){
+  document.getElementById("parte1").style.display="none";
+  document.getElementById("parte2").style.display="block";
+  iniciarCarrossel();
+  atualizarContador();
+}
+
+// Carrossel automático
+function mostrarFoto(indice) {
+  const fotos = document.querySelectorAll('.fotoCarrossel');
+  fotos.forEach(f => f.style.display = 'none');
+  fotos[indice].style.display = 'block';
+}
+
+function iniciarCarrossel() {
+  const fotos = document.querySelectorAll('.fotoCarrossel');
+  mostrarFoto(indiceFoto);
+
+  if (intervaloCarrossel) clearInterval(intervaloCarrossel);
+
+  intervaloCarrossel = setInterval(() => {
+    indiceFoto = (indiceFoto + 1) % fotos.length;
+    mostrarFoto(indiceFoto);
+  }, 3000);
+}
+
+function fotoProxima() {
+  const fotos = document.querySelectorAll('.fotoCarrossel');
+  indiceFoto = (indiceFoto + 1) % fotos.length;
+  mostrarFoto(indiceFoto);
+}
+
+function fotoAnterior() {
+  const fotos = document.querySelectorAll('.fotoCarrossel');
+  indiceFoto = (indiceFoto - 1 + fotos.length) % fotos.length;
+  mostrarFoto(indiceFoto);
+}
+
+// Contador de dias, horas, minutos e segundos
+function atualizarContador() {
+  const dataInicial = new Date("2025-06-08T00:00:00");
+  setInterval(() => {
+    const agora = new Date();
+    const diff = agora - dataInicial;
+
+    const dias = Math.floor(diff / (1000*60*60*24));
+    const horas = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+    const minutos = Math.floor((diff % (1000*60*60)) / (1000*60));
+    const segundos = Math.floor((diff % (1000*60)) / 1000);
+
+    document.getElementById('diasJuntos').innerText = dias;
+    document.getElementById('horasJuntos').innerText = horas;
+    document.getElementById('minutosJuntos').innerText = minutos;
+    document.getElementById('segundosJuntos').innerText = segundos;
+  }, 1000);
+}
+
+// Inicializar contador ao carregar
+window.addEventListener('load', atualizarContador);
+
+/* ================= Parte 3 - corações explodindo ================= */
+const parte3 = document.getElementById('parte3');
+const btnParte3 = document.getElementById('btnParte3');
+
+const mensagensExplosao = [
+  "A lua perde todo brilho dela ao seu lado!",
+  "Seus olhos são mais bonitos que as noites estreladas!",
+  "Eu te amo Demais meu amor!",
+  "Não vejo a hora de casar contigo",
+  "Você é o meu lugar favorito no mundo.",
+  "Desde que você chegou, minha vida ganhou mais cor e sentido.",
+  "O seu sorriso é a minha paz.",
+  "Com você, até os dias cinzentos ficam ensolarados.",
+  "Meu coração bate mais forte só de pensar em você.",
+  "Amar você é a melhor parte da minha vida.",
+  "Você é o meu sonho que virou realidade.",
+  "Cada detalhe seu é poesia para mim.",
+  "Sou grato a Deus por ter enviado o meu amor",
+  "sou muito Feliz ao seu lado meu amor",
+];
+
+// Ao clicar no botão "?"
+btnParte3.addEventListener('click', () => {
+  document.getElementById("parte1").style.display = 'none';
+  document.getElementById("parte2").style.display = 'none';
+  parte3.style.display = 'block';
+  gerarCoracoesExplosivos();
+});
+
+function gerarCoracoesExplosivos() {
+  for(let i=0; i<30; i++){
+    criarCoracaoExplosivo();
+  }
+}
+
+// Funções ajustadas para reaparecer corações
+function criarCoracaoExplosivo() {
+  const coracao = document.createElement('div');
+  coracao.classList.add('coracaoExplosao');
+  coracao.innerText = '❤️';
+  coracao.style.left = Math.random() * window.innerWidth + 'px';
+  coracao.style.top = Math.random() * window.innerHeight + 'px';
+  coracao.style.fontSize = (20 + Math.random() * 30) + 'px';
+  
+  coracao.addEventListener('click', () => {
+    explodirCoracao(coracao);
+
+    // Reaparecer um novo coração depois de 500ms
+    setTimeout(() => {
+      criarCoracaoExplosivo();
+    }, 500);
+  });
+
+  parte3.appendChild(coracao);
+}
+
+function explodirCoracao(coracao) {
+  const msg = document.createElement('div');
+  msg.classList.add('mensagemExplosao');
+  msg.innerText = mensagensExplosao[Math.floor(Math.random() * mensagensExplosao.length)];
+  msg.style.left = coracao.offsetLeft + 'px';
+  msg.style.top = coracao.offsetTop + 'px';
+  parte3.appendChild(msg);
+
+  coracao.style.transform = 'scale(2)';
+  coracao.style.opacity = '0';
+  
+  setTimeout(() => { msg.style.opacity = '1'; }, 100);
+
+  setTimeout(() => {
+    coracao.remove();
+    msg.remove();
+  }, 2000);
+}
+</script>
+
 </body>
 </html>
